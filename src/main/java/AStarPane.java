@@ -4,9 +4,10 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class AStarPane extends JPanel {
-    public AStarPane() {
-        ArrayList<CellPane> cells = new ArrayList<CellPane>();
+class AStarPane extends JPanel {
+    AStarPane() {
+//        ArrayList<CellPane> cells = new ArrayList<CellPane>();
+        CellPane[][] cells = new CellPane[AStar.N][AStar.N];
         setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -16,9 +17,8 @@ public class AStarPane extends JPanel {
                 gbc.gridy = row;
 
                 CellPane cellPane = new CellPane();
-                cells.add(cellPane);
 
-                Border border = null;
+                Border border;
                 if (row < 4) {
                     if (col < 4) {
                         border = new MatteBorder(1, 1, 0, 0, Color.GRAY);
@@ -33,10 +33,13 @@ public class AStarPane extends JPanel {
                     }
                 }
                 cellPane.setBorder(border);
+//                cells.add(cellPane);
+                cells[row][col] = cellPane;
                 add(cellPane, gbc);
             }
         }
         PathFinder path = new PathFinder(cells);
-        path.findPath(1,1,80,80);
+        int length = path.findPath(1,2,45,45);
+        System.out.println(length);
     }
 }

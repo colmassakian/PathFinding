@@ -2,12 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CellPane extends JPanel {
-    public CellPane() {
+    CellPane() {
 
     }
 
-    public void setColor() {
-        setBackground(Color.RED);
+    void setColor(Color c) {
+        setBackground(c);
     }
 
     @Override

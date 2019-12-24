@@ -2,22 +2,22 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AStar {
-    public static final int N = 100;
+    static final int N = 100;
     public static void main(String[] args) {
         new AStar();
     }
 
     // TODO: Move to Draw class
-    public AStar() {
+    private AStar() {
         EventQueue.invokeLater(new Runnable() {
 
             public void run() {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (ClassNotFoundException ex) {
-                } catch (InstantiationException ex) {
-                } catch (IllegalAccessException ex) {
-                } catch (UnsupportedLookAndFeelException ex) {
+                } catch (ClassNotFoundException ignored) {
+                } catch (InstantiationException ignored) {
+                } catch (IllegalAccessException ignored) {
+                } catch (UnsupportedLookAndFeelException ignored) {
                 }
 
                 JFrame frame = new JFrame("AStar");
@@ -28,8 +28,6 @@ public class AStar {
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
-//                int ind = findPath(1,1, 8, 8);
-//                cells.get(ind).setColor();
             }
         });
     }
