@@ -43,6 +43,8 @@ class PathFinder {
             }
         }
 
+        for (int i = 0; i < 5; i ++)
+            System.out.println("IntelliJ Test");
         return dijkstra(startX, startY, endX, endY);
     }
 
