@@ -39,7 +39,7 @@ class AStarPane extends JPanel {
             }
         }
         PathFinder path = new PathFinder(cells);
-        int length = path.findPath(1,2,45,45);
-        System.out.println(length);
+        path.findPath(1,2,45,45);
+//        System.out.println(length);
     }
 }

@@ -3,36 +3,75 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 class PathFinder {
     CellPane[][] cells;
-    private Timer timer;
-    private int delay = 1500; // every 1 second
     private Color border = Color.BLACK;
 
     PathFinder(CellPane[][] cells) {
         this.cells = cells;
-        timer = new Timer(delay, action);
-        timer.setInitialDelay(0);
-        timer.start();
     }
 
-    private ActionListener action = new ActionListener()
+    class DijkstraWorker extends SwingWorker<Void, Tuple>
     {
-        public void actionPerformed(ActionEvent event)
+        protected Void doInBackground() throws Exception
         {
-//            if(i == 0)
-//            {
-//                timer.stop();
-//            }
-//            else
-//            {
-//                cells[1][1].setColor(c);
-//            }
-        }
-    };
+            int startX = 40;
+            int startY = 40;
+            int endX = 80;
+            int endY = 80;
+            int numNodes = AStar.N * AStar.N;
 
-    int findPath(int startX, int startY, int endX, int endY) {
+            Tuple min;
+            int minIndex, neighborIndex;
+            int cost = 1;
+            int dist[] = new int[numNodes];
+            boolean visited[] = new boolean[numNodes];
+            ArrayList<Tuple> neighbors;
+
+            Tuple start = new Tuple(startX, startY);
+            Tuple end = new Tuple(endX, endY);
+            cells[startX][startY].setColor(Color.GREEN);
+            cells[endX][endY].setColor(Color.RED);
+
+            // Initial Dijkstra conditions
+            for (int i = 0; i < numNodes; i ++)
+            {
+                dist[i] = Integer.MAX_VALUE;
+                visited[i] = false;
+            }
+
+            dist[start.getSingle()] = 0;
+            // Continue while there are unvisited nodes
+            while ((min = getMin(dist, visited, numNodes)) != null)
+            {
+                minIndex = min.getSingle();
+                visited[minIndex] = true;
+                // If we visit the end we can stop searching
+                if(min.equals(end))
+                    return null;
+
+                // Get neighbors of current node and update their cost if necessary
+                neighbors = getNeighbors(min);
+                for (Tuple neighbor : neighbors) {
+                    neighborIndex = neighbor.getSingle();
+                    if (dist[minIndex] + cost < dist[neighborIndex])
+                        dist[neighborIndex] = dist[minIndex] + cost;
+                    Thread.sleep(1);
+                    publish(neighbor);
+                }
+            }
+            return null;
+        }
+
+        protected void process(List<Tuple> pairs) {
+            for (Tuple pair : pairs) {
+                cells[pair.x][pair.y].setColor(Color.BLUE);
+            }
+        }
+    }
+    void findPath(int startX, int startY, int endX, int endY) {
         // Set borders to be white
         for (int i = 0; i < AStar.N; i ++)
         {
@@ -43,55 +82,8 @@ class PathFinder {
             }
         }
 
-        for (int i = 0; i < 5; i ++)
-            System.out.println("IntelliJ Test");
-        return dijkstra(startX, startY, endX, endY);
-    }
-
-    private int dijkstra(int startX, int startY, int endX, int endY)
-    {
-        int numNodes = AStar.N * AStar.N;
-
-        Tuple min;
-        int minIndex, neighborIndex;
-        int cost = 1;
-        int dist[] = new int[numNodes];
-        boolean visited[] = new boolean[numNodes];
-        ArrayList<Tuple> neighbors;
-
-        Tuple start = new Tuple(startX, startY);
-        Tuple end = new Tuple(endX, endY);
-        cells[startX][startY].setColor(Color.GREEN);
-        cells[endX][endY].setColor(Color.RED);
-
-        // Initial Dijkstra conditions
-        for (int i = 0; i < numNodes; i ++)
-        {
-            dist[i] = Integer.MAX_VALUE;
-            visited[i] = false;
-        }
-
-        dist[start.getSingle()] = 0;
-        // Continue while there are unvisited nodes
-        while ((min = getMin(dist, visited, numNodes)) != null)
-        {
-            minIndex = min.getSingle();
-            visited[minIndex] = true;
-            // If we visit the end we can stop searching
-            if(min.equals(end))
-                return dist[minIndex];
-
-            // Get neighbors of current node and update their cost if necessary
-            neighbors = getNeighbors(min);
-            for (Tuple neighbor : neighbors) {
-                neighborIndex = neighbor.getSingle();
-                if (dist[minIndex] + cost < dist[neighborIndex])
-                    dist[neighborIndex] = dist[minIndex] + cost;
-
-            }
-        }
-//        action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null) {});
-        return -1;
+        new DijkstraWorker().execute();
+//        return dijkstra(startX, startY, endX, endY);
     }
 
     // Return the indices of all neighboring nodes that are in bounds and not borders
