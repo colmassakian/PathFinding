@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 class PathFinder {
-    CellPane[][] cells;
+    private CellPane[][] cells;
+    private int straightDist;
     private Color border = Color.BLACK;
 
     PathFinder(CellPane[][] cells) {
@@ -17,8 +18,9 @@ class PathFinder {
         {
             int startX = 40;
             int startY = 40;
-            int endX = 80;
-            int endY = 80;
+            int endX = 60;
+            int endY = 60;
+            straightDist = getStraightLineDist(startX, startY, endX, endY);
             int numNodes = AStar.N * AStar.N;
 
             Tuple min;
@@ -56,6 +58,7 @@ class PathFinder {
                     neighborIndex = neighbor.getSingle();
                     if (dist[minIndex] + cost < dist[neighborIndex])
                         dist[neighborIndex] = dist[minIndex] + cost;
+                    neighbor.setDist(dist[neighborIndex]);
                     Thread.sleep(1);
                     publish(neighbor);
                 }
@@ -64,11 +67,22 @@ class PathFinder {
         }
 
         protected void process(List<Tuple> pairs) {
+            double normal;
             for (Tuple pair : pairs) {
-                cells[pair.x][pair.y].setColor(Color.BLUE);
+                // Add gradient while searching based on distance
+                normal = ((double) pair.dist / straightDist) * 255;
+                if(normal > 255) { normal = 255;}
+                cells[pair.x][pair.y].setColor(new Color(0, (int) normal / 2, (int) normal));
             }
         }
     }
+
+    private int getStraightLineDist(int startX, int startY, int endX, int endY) {
+        int xDiff = endX - startX;
+        int yDiff = endY - endX;
+        return (int) Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+    }
+
     void findPath(int startX, int startY, int endX, int endY) {
         // Set borders to be white
         for (int i = 0; i < AStar.N; i ++)
@@ -86,7 +100,7 @@ class PathFinder {
 
     // Return the indices of all neighboring nodes that are in bounds and not borders
     private ArrayList<Tuple> getNeighbors(Tuple minIndex) {
-        ArrayList<Tuple> neighbors = new ArrayList<Tuple>();
+        ArrayList<Tuple> neighbors = new ArrayList<>();
 
         for (int i = -1; i <= 1; i ++)
         {
