@@ -15,6 +15,20 @@ class PathFinder {
     void findPath(int startX, int startY, int endX, int endY) {
         straightDist = getStraightLineDist(startX, startY, endX, endY);
         // TODO: Set Dijkstra or AStar with button
+        Tuple point;
+        // If a start or end point has been set, use it; otherwise use default values
+        point = getPoint(Color.GREEN);
+        if(AStar.setStart != 0 && point != null)
+        {
+            startX = point.x;
+            startY = point.y;
+        }
+        point = getPoint(Color.RED);
+        if(AStar.setEnd != 0 && point != null)
+        {
+            endX = point.x;
+            endY = point.y;
+        }
         new PathFinderWorker(startX, startY, endX, endY, 1).execute();
     }
 
@@ -130,6 +144,19 @@ class PathFinder {
             cells[path.x][path.y].setColor(Color.ORANGE);
             path = cells[path.x][path.y].getPath();
         }
+    }
+
+    // Return coordinates in cells array that match the given color
+    private Tuple getPoint(Color col) {
+        for (int i = 0; i < AStar.N; i ++)
+        {
+            for(int j = 0; j < AStar.N; j ++)
+            {
+                if(cells[i][j].getBackground().equals(col))
+                    return new Tuple(i, j);
+            }
+        }
+        return null;
     }
 
     // Return the indices of all neighboring nodes that are in bounds and not borders

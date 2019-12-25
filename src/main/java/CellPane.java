@@ -13,6 +13,20 @@ public class CellPane extends JPanel {
                 if(AStar.makeBorder)
                     setBackground(Color.BLACK);
             }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(AStar.setStart % 2 != 0)
+                {
+                    setBackground(Color.GREEN);
+                    AStar.setStart ++;
+                }
+                if(AStar.setEnd % 2 != 0)
+                {
+                    setBackground(Color.RED);
+                    AStar.setEnd ++;
+                }
+            }
         });
     }
 

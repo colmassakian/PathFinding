@@ -45,6 +45,6 @@ class AStarPane extends JPanel {
     void startPathFinder()
     {
         PathFinder path = new PathFinder(cells);
-        path.findPath(45,45,85,85);
+        path.findPath(25,25,75,75);
     }
 }

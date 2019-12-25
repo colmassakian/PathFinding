@@ -1,10 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class AStar {
     static final int N = 100;
+    static int setStart = 0;
+    static int setEnd = 0;
     static boolean makeBorder;
 
     public static void main(String[] args) {
@@ -38,14 +42,16 @@ public class AStar {
 
                     public void keyTyped(KeyEvent e) {}
                 });
-//                JButton setStartPoint = new JButton("Set Start Point");
-//                JButton setEndPoint = new JButton("Set End Point");
+                JButton setStartPoint = new JButton("Set Start Point");
+                setStartPoint.addActionListener(e -> setStart ++);
+                JButton setEndPoint = new JButton("Set End Point");
+                setEndPoint.addActionListener(e -> setEnd ++);
 //                JButton selector = new JButton("Dijkstra/AStar");
                 JButton start = new JButton("START!");
                 start.addActionListener(e -> starPane.startPathFinder());
                 JPanel panel1 = new JPanel();
-//                panel1.add(setStartPoint);
-//                panel1.add(setEndPoint);
+                panel1.add(setStartPoint);
+                panel1.add(setEndPoint);
 //                panel1.add(selector);
                 panel1.add(start);
                 frame.add(panel1, BorderLayout.NORTH);  // add the panel to the frame
