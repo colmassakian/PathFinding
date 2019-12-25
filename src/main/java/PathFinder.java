@@ -20,7 +20,7 @@ class PathFinder {
         private int endY;
         private final int option;
 
-        public PathFinderWorker(int startX, int startY, int endX, int endY, int option) {
+        PathFinderWorker(int startX, int startY, int endX, int endY, int option) {
             this.startX = startX;
             this.startY = startY;
             this.endX = endX;
@@ -60,7 +60,10 @@ class PathFinder {
                 visited[minIndex] = true;
                 // If we visit the end we can stop searching
                 if(min.equals(end))
+                {
+                    printPath(startX, startY, endX, endY);
                     return null;
+                }
 
                 // Get neighbors of current node and update their cost if necessary
                 neighbors = getNeighbors(min);
@@ -72,7 +75,10 @@ class PathFinder {
                         heuristic = getStraightLineDist(neighbor.x, neighbor.y, endX, endY);
 
                     if (dist[minIndex] + cost + heuristic < dist[neighborIndex])
+                    {
                         dist[neighborIndex] = dist[minIndex] + cost + heuristic;
+                        cells[neighbor.x][neighbor.y].setPath(min);
+                    }
 
                     // Save distance for coloring
                     neighbor.setDist(dist[neighborIndex]);
@@ -80,6 +86,7 @@ class PathFinder {
                     publish(neighbor);
                 }
             }
+
             return null;
         }
 
@@ -96,7 +103,7 @@ class PathFinder {
 
     private int getStraightLineDist(int startX, int startY, int endX, int endY) {
         int xDiff = endX - startX;
-        int yDiff = endY - endX;
+        int yDiff = endY - startY;
         return (int) Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
     }
 
@@ -113,6 +120,17 @@ class PathFinder {
         }
 
         new PathFinderWorker(startX, startY, endX, endY, 1).execute();
+    }
+
+    // Go through cell array to find the tiles that make up the shortest path
+    private void printPath(int startX, int startY, int endX, int endY) {
+        Tuple path = cells[endX][endY].getPath();
+        Tuple start = new Tuple(startX, startY);
+        while (!path.equals(start))
+        {
+            cells[path.x][path.y].setColor(Color.ORANGE);
+            path = cells[path.x][path.y].getPath();
+        }
     }
 
     // Return the indices of all neighboring nodes that are in bounds and not borders
