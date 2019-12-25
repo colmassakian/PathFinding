@@ -42,20 +42,24 @@ public class AStar {
 
                     public void keyTyped(KeyEvent e) {}
                 });
+                frame.setFocusable(true);
                 JButton setStartPoint = new JButton("Set Start Point");
                 setStartPoint.addActionListener(e -> setStart ++);
+                setStartPoint.setFocusable(false);
                 JButton setEndPoint = new JButton("Set End Point");
                 setEndPoint.addActionListener(e -> setEnd ++);
+                setEndPoint.setFocusable(false);
 //                JButton selector = new JButton("Dijkstra/AStar");
                 JButton start = new JButton("START!");
                 start.addActionListener(e -> starPane.startPathFinder());
+                start.setFocusable(false);
                 JPanel panel1 = new JPanel();
                 panel1.add(setStartPoint);
                 panel1.add(setEndPoint);
 //                panel1.add(selector);
                 panel1.add(start);
                 frame.add(panel1, BorderLayout.NORTH);  // add the panel to the frame
-                frame.setFocusable(true);
+//                frame.setFocusable(true);
                 frame.setVisible(true);
 
             }
