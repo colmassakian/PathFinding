@@ -2,7 +2,8 @@ public class Tuple {
     final int x;
     final int y;
 
-    int dist;
+
+    private int dist;
 
     Tuple(int x, int y) {
         this.x = x;
@@ -12,6 +13,10 @@ public class Tuple {
     Tuple(int minIndex) {
         x = minIndex / AStar.N;
         y = minIndex % AStar.N;
+    }
+
+    int getDist() {
+        return dist;
     }
 
     void setDist(int dist) {

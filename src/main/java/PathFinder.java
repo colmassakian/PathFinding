@@ -37,6 +37,7 @@ class PathFinder {
             int cost = 1;
             int heuristic;
             int dist[] = new int[numNodes];
+            int total[] = new int[numNodes];
             boolean visited[] = new boolean[numNodes];
             ArrayList<Tuple> neighbors;
 
@@ -49,12 +50,14 @@ class PathFinder {
             for (int i = 0; i < numNodes; i ++)
             {
                 dist[i] = Integer.MAX_VALUE;
+                total[i] = Integer.MAX_VALUE;
                 visited[i] = false;
             }
 
             dist[start.getSingle()] = 0;
+            total[start.getSingle()] = 0;
             // Continue while there are unvisited nodes
-            while ((min = getMin(dist, visited, numNodes)) != null)
+            while ((min = getMin(total, visited, numNodes)) != null)
             {
                 minIndex = min.getSingle();
                 visited[minIndex] = true;
@@ -74,15 +77,17 @@ class PathFinder {
                     else // AStar
                         heuristic = getStraightLineDist(neighbor.x, neighbor.y, endX, endY);
 
-                    if (dist[minIndex] + cost + heuristic < dist[neighborIndex])
+                    if (dist[minIndex] + cost + heuristic < total[neighborIndex])
                     {
-                        dist[neighborIndex] = dist[minIndex] + cost + heuristic;
+                        dist[neighborIndex] = dist[minIndex] + cost;
+                        total[neighborIndex] = dist[neighborIndex] + heuristic;
                         cells[neighbor.x][neighbor.y].setPath(min);
                     }
 
                     // Save distance for coloring
-                    neighbor.setDist(dist[neighborIndex]);
-                    Thread.sleep(1);
+                    neighbor.setDist(total[neighborIndex]);
+                    // Sleep so that the thread has time to update
+                    Thread.sleep(5);
                     publish(neighbor);
                 }
             }
@@ -94,9 +99,10 @@ class PathFinder {
             double normal;
             for (Tuple pair : pairs) {
                 // Add gradient while searching based on distance
-                normal = ((double) pair.dist / straightDist) * 255;
+                normal = ((double) pair.getDist() / straightDist) * 255;
+
                 if(normal > 255) { normal = 255;}
-                cells[pair.x][pair.y].setColor(new Color(0, (int) normal / 2, (int) normal));
+                cells[pair.x][pair.y].setColor(new Color(0, 0, (int) normal));
             }
         }
     }
