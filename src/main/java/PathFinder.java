@@ -12,6 +12,12 @@ class PathFinder {
         this.cells = cells;
     }
 
+    void findPath(int startX, int startY, int endX, int endY) {
+        straightDist = getStraightLineDist(startX, startY, endX, endY);
+        // TODO: Set Dijkstra or AStar with button
+        new PathFinderWorker(startX, startY, endX, endY, 1).execute();
+    }
+
     class PathFinderWorker extends SwingWorker<Void, Tuple>
     {
         private int startX;
@@ -28,8 +34,7 @@ class PathFinder {
             this.option = option;
         }
 
-        protected Void doInBackground() throws Exception
-        {
+        protected Void doInBackground() throws Exception {
             int numNodes = AStar.N * AStar.N;
 
             Tuple min;
@@ -95,37 +100,25 @@ class PathFinder {
             return null;
         }
 
+        // Color in grid with gradient based on distance from target
         protected void process(List<Tuple> pairs) {
             double normal;
+            int distance;
             for (Tuple pair : pairs) {
                 // Add gradient while searching based on distance
+//                distance = getStraightLineDist(pair.x, pair.y, endX, endY);
                 normal = ((double) pair.getDist() / straightDist) * 255;
 
                 if(normal > 255) { normal = 255;}
-                cells[pair.x][pair.y].setColor(new Color(0, 0, (int) normal));
+                cells[pair.x][pair.y].setColor(new Color(0, (int) normal / 2, (int) normal));
             }
         }
     }
 
     private int getStraightLineDist(int startX, int startY, int endX, int endY) {
-        int xDiff = endX - startX;
-        int yDiff = endY - startY;
-        return (int) Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-    }
-
-    void findPath(int startX, int startY, int endX, int endY) {
-        // Set borders to be white
-        straightDist = getStraightLineDist(startX, startY, endX, endY);
-        for (int i = 0; i < AStar.N; i ++)
-        {
-            for (int j = 0; j < AStar.N; j ++)
-            {
-                if(i == 0 || i == AStar.N - 1 || j == 0 || j == AStar.N - 1)
-                    cells[i][j].setColor(border);
-            }
-        }
-
-        new PathFinderWorker(startX, startY, endX, endY, 1).execute();
+        int deltaX = endX - startX;
+        int deltaY = endY - startY;
+        return (int) Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
     }
 
     // Go through cell array to find the tiles that make up the shortest path

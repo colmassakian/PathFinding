@@ -2,12 +2,13 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.util.ArrayList;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 class AStarPane extends JPanel {
+    private CellPane[][] cells = new CellPane[AStar.N][AStar.N];
     AStarPane() {
-//        ArrayList<CellPane> cells = new ArrayList<CellPane>();
-        CellPane[][] cells = new CellPane[AStar.N][AStar.N];
+
         setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -33,13 +34,17 @@ class AStarPane extends JPanel {
                     }
                 }
                 cellPane.setBorder(border);
-//                cells.add(cellPane);
                 cells[row][col] = cellPane;
+                if(row == 0 || row == AStar.N - 1 || col == 0 || col == AStar.N - 1)
+                    cells[row][col].setColor(Color.BLACK);
                 add(cellPane, gbc);
             }
         }
+    }
+
+    void startPathFinder()
+    {
         PathFinder path = new PathFinder(cells);
         path.findPath(45,45,85,85);
-//        System.out.println(length);
     }
 }
